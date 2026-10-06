@@ -1,0 +1,16 @@
+name: Build VST3
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+      - run: cmake --build build --config Release --target Ultrasaw_VST3 -j 4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ultrasaw-${{ matrix.os }}
+          path: build/Ultrasaw_artefacts/Release/VST3/
